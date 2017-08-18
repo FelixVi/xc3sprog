@@ -156,88 +156,88 @@ int IOFtdi::Init(struct cable_t *cable, const char *serial, unsigned int freq)
               dbus_data, dbus_en, cbus_data, cbus_en);
   }
 
-  if (!use_ftd2xx)
-  {
-      // allocate and initialize FTDI structure
-      ftdi_handle = ftdi_new();
-      // Set interface
-      if (channel > 2)
-      {
-          fprintf(stderr, "Invalid MPSSE channel: %d", channel);
-          res = 2;
-          goto ftdi_fail;
-      }
-      res =ftdi_set_interface(ftdi_handle, (ftdi_interface)channel);
-      if(res <0)
-      {
-          fprintf(stderr, "ftdi_set_interface: %s\n",
-                  ftdi_get_error_string(ftdi_handle));
-          goto ftdi_fail;
-      }
+  //~ if (!use_ftd2xx)
+  //~ {
+      //~ // allocate and initialize FTDI structure
+      //~ ftdi_handle = ftdi_new();
+      //~ // Set interface
+      //~ if (channel > 2)
+      //~ {
+          //~ fprintf(stderr, "Invalid MPSSE channel: %d", channel);
+          //~ res = 2;
+          //~ goto ftdi_fail;
+      //~ }
+      //~ res =ftdi_set_interface(ftdi_handle, (ftdi_interface)channel);
+      //~ if(res <0)
+      //~ {
+          //~ fprintf(stderr, "ftdi_set_interface: %s\n",
+                  //~ ftdi_get_error_string(ftdi_handle));
+          //~ goto ftdi_fail;
+      //~ }
 
-      // Open device
-      res = ftdi_usb_open_desc(ftdi_handle, vendor, product,
-                               description, serial);
-      if (res == 0)
-      {
-          res = ftdi_set_bitmode(ftdi_handle, 0x00, BITMODE_RESET);
-          if(res < 0)
-          {
-              fprintf(stderr, "ftdi_set_bitmode: %s",
-                      ftdi_get_error_string(ftdi_handle));
-              goto ftdi_fail;
-          }
-          res = ftdi_usb_purge_buffers(ftdi_handle);
-          if(res < 0)
-          {
-              fprintf(stderr, "ftdi_usb_purge_buffers: %s",
-                      ftdi_get_error_string(ftdi_handle));
-              goto ftdi_fail;
-         }
-          //Set the lacentcy time to a low value
-          res = ftdi_set_latency_timer(ftdi_handle, 1);
-          if( res <0)
-          {
-              fprintf(stderr, "ftdi_set_latency_timer: %s",
-                      ftdi_get_error_string(ftdi_handle));
-              goto ftdi_fail;
-          }
+      //~ // Open device
+      //~ res = ftdi_usb_open_desc(ftdi_handle, vendor, product,
+                               //~ description, serial);
+      //~ if (res == 0)
+      //~ {
+          //~ res = ftdi_set_bitmode(ftdi_handle, 0x00, BITMODE_RESET);
+          //~ if(res < 0)
+          //~ {
+              //~ fprintf(stderr, "ftdi_set_bitmode: %s",
+                      //~ ftdi_get_error_string(ftdi_handle));
+              //~ goto ftdi_fail;
+          //~ }
+          //~ res = ftdi_usb_purge_buffers(ftdi_handle);
+          //~ if(res < 0)
+          //~ {
+              //~ fprintf(stderr, "ftdi_usb_purge_buffers: %s",
+                      //~ ftdi_get_error_string(ftdi_handle));
+              //~ goto ftdi_fail;
+         //~ }
+          //~ //Set the lacentcy time to a low value
+          //~ res = ftdi_set_latency_timer(ftdi_handle, 1);
+          //~ if( res <0)
+          //~ {
+              //~ fprintf(stderr, "ftdi_set_latency_timer: %s",
+                      //~ ftdi_get_error_string(ftdi_handle));
+              //~ goto ftdi_fail;
+          //~ }
 
-          // Set mode to MPSSE
-          res = ftdi_set_bitmode(ftdi_handle, 0xfb, BITMODE_MPSSE);
-          if(res< 0)
-          {
-              fprintf(stderr, "ftdi_set_bitmode: %s",
-                      ftdi_get_error_string(ftdi_handle));
-              goto ftdi_fail;
-          }
-          /* FIXME: Without this read, consecutive runs on the
-             FT2232H may hang */
-          ftdi_read_data(ftdi_handle, buf1,5);
+          //~ // Set mode to MPSSE
+          //~ res = ftdi_set_bitmode(ftdi_handle, 0xfb, BITMODE_MPSSE);
+          //~ if(res< 0)
+          //~ {
+              //~ fprintf(stderr, "ftdi_set_bitmode: %s",
+                      //~ ftdi_get_error_string(ftdi_handle));
+              //~ goto ftdi_fail;
+          //~ }
+          //~ /* FIXME: Without this read, consecutive runs on the
+             //~ FT2232H may hang */
+          //~ ftdi_read_data(ftdi_handle, buf1,5);
 
-          /* Check if we have a fast clock cabable device*/
-          switch(ftdi_handle->type)
-          {
-          case TYPE_2232H:
-          case TYPE_4232H:
-#ifdef DRIVE_OPEN_COLLECTOR
-          case TYPE_232H:
-#endif
-              device_has_fast_clock = true;
-              break;
-          default:
-              device_has_fast_clock = false;
-          }
+          //~ /* Check if we have a fast clock cabable device*/
+          //~ switch(ftdi_handle->type)
+          //~ {
+          //~ case TYPE_2232H:
+          //~ case TYPE_4232H:
+//~ #ifdef DRIVE_OPEN_COLLECTOR
+          //~ case TYPE_232H:
+//~ #endif
+              //~ device_has_fast_clock = true;
+              //~ break;
+          //~ default:
+              //~ device_has_fast_clock = false;
+          //~ }
 
-      }
-      else /* Unconditionally try ftd2xx on error*/
-      {
-          fprintf(stderr, "Could not open FTDI device (using libftdi): %s\n",
-                  ftdi_get_error_string(ftdi_handle));
-          ftdi_free(ftdi_handle);
-          ftdi_handle = 0;
-      }
-  }
+      //~ }
+      //~ else /* Unconditionally try ftd2xx on error*/
+      //~ {
+          //~ fprintf(stderr, "Could not open FTDI device (using libftdi): %s\n",
+                  //~ ftdi_get_error_string(ftdi_handle));
+          //~ ftdi_free(ftdi_handle);
+          //~ ftdi_handle = 0;
+      //~ }
+  //~ }
 
 #ifdef USE_FTD2XX
   if (ftdi_handle == 0)
@@ -620,14 +620,16 @@ unsigned int IOFtdi::readusb(unsigned char * rbuf, unsigned long len)
         int length = (int) len;
         int timeout=0, last_errno, last_read;
         calls_rd++;
-        last_read = ftdi_read_data(ftdi_handle, rbuf, length );
+        //~ last_read = ftdi_read_data(ftdi_handle, rbuf, length );
+        last_read = 0;
         if (last_read > 0)
             read += last_read;
         while (((int)read <length) && ( timeout <1000))
         {
             last_errno = 0;
             retries++;
-            last_read = ftdi_read_data(ftdi_handle, rbuf+read, length -read);
+            //~ last_read = ftdi_read_data(ftdi_handle, rbuf+read, length -read);
+            last_read = 0;
             if (last_read > 0)
                 read += last_read;
             else
@@ -689,10 +691,10 @@ void IOFtdi::deinit(void)
   else
 #endif
   {
-      ftdi_set_bitmode(ftdi_handle, 0, BITMODE_RESET);
-      ftdi_usb_reset(ftdi_handle);
-      ftdi_usb_close(ftdi_handle);
-      ftdi_deinit(ftdi_handle);
+      //~ ftdi_set_bitmode(ftdi_handle, 0, BITMODE_RESET);
+      //~ ftdi_usb_reset(ftdi_handle);
+      //~ ftdi_usb_close(ftdi_handle);
+      //~ ftdi_deinit(ftdi_handle);
   }
   if(verbose)
     fprintf(stderr, "USB transactions: Write %d read %d retries %d\n",
@@ -768,18 +770,18 @@ void IOFtdi::mpsse_send() {
           throw  io_exception();
       }
   }
-  else
+  //~ else
 #endif
-  {
-      calls_wr++;
-      int written = ftdi_write_data(ftdi_handle, usbuf, bptr);
-      if(written != (int) bptr)
-      {
-          fprintf(stderr,"mpsse_send: Short write %d vs %d at run %d, Err: %s\n",
-                  written, bptr, calls_wr, ftdi_get_error_string(ftdi_handle));
-          throw  io_exception();
-      }
-  }
+  //~ {
+      //~ calls_wr++;
+      //~ int written = ftdi_write_data(ftdi_handle, usbuf, bptr);
+      //~ if(written != (int) bptr)
+      //~ {
+          //~ fprintf(stderr,"mpsse_send: Short write %d vs %d at run %d, Err: %s\n",
+                  //~ written, bptr, calls_wr, ftdi_get_error_string(ftdi_handle));
+          //~ throw  io_exception();
+      //~ }
+  //~ }
 
   bptr = 0;
 }

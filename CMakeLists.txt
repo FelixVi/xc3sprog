@@ -20,8 +20,8 @@ endif(${WIN32})
 
 option(USE_FTD2XX "Use FTDI libFTD2XX instead of free libftdi" ON)
 
-pkg_check_modules(LIBFTDI REQUIRED libftdi1)
-include_directories(${LIBFTDI_INCLUDE_DIRS})
+#pkg_check_modules(LIBFTDI REQUIRED libftdi1)
+#include_directories(${LIBFTDI_INCLUDE_DIRS})
 
 if(USE_FTD2XX)
   find_package(libFTD2XX)

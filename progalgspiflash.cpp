@@ -197,7 +197,7 @@ int ProgAlgSPIFlash::spi_flashinfo_w25(unsigned char *buf)
 {
   fprintf(stderr, "Found Winbond Device, Device ID 0x%02x%02x\n",
 	  buf[1], buf[2]);
-  if ((buf[1] != 0x30) && (buf[1] != 0x40))
+  if ((buf[1] != 0x30) && (buf[1] != 0x40) && (buf[1] != 0x70))
     {
       fprintf(stderr,"W25: Unexpected RDID upper Device ID 0x%02x\n", buf[1]);
       return -1;
